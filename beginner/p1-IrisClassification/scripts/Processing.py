@@ -22,6 +22,7 @@ IQR_filepath = os.path.join(models_path,'feature_IQR.json')
 
 # Create the processing function
 def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
+                  feature_names : list = [],
                   train : bool = False,
                   save_scaler : bool = True,
                   save_IQR : bool = True) :
@@ -35,6 +36,7 @@ def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
         train : a boolean that indicates if we're processing in the training phase or not
             if train = True : then we will be saving Scalers, Outlier parameters etc
             if train = False : then we'll be reading model preprocessing files
+        feature names : The list of the features names
         
         save_scaler : a boolean to indicate if we want to save a new scaler during training
         save_IQR : a boolean to indicate if we want to save new IQR param during training
@@ -60,15 +62,14 @@ def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
           
     """
     
-    if isinstance(iris, pd.DataFrame):
-        if iris.shape[1] !=4 :
-            raise ValueError("The input for training or fitting must have 4 columns")
-    elif isinstance(iris.data, np.ndarray):
-        if iris.data.shape[1] !=4 :
-            raise ValueError("The input for training or fitting must have 4 columns")
-        iris = pd.DataFrame(data=np.c_[iris['data']], columns=iris['feature_names'])
-    else:
+    if not  isinstance(iris, (np.ndarray, pd.DataFrame)):
         raise ValueError("The input data must be a numpy ndarray or a pandas DataFrame")
+    
+    if iris.shape[1] !=4 :
+            raise ValueError("The input for training or fitting must have 4 columns")
+            
+    if isinstance(iris, np.ndarray):
+        iris = pd.DataFrame(data=np.c_[iris.data], columns=feature_names)
         
     iris = iris.rename(columns = {'sepal length (cm)' : 'SepalLength',
                                   'sepal width (cm)' : 'SepalWidth',
@@ -121,7 +122,7 @@ def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
         # Load the quantiles and cap outliers
         try:
             with open(IQR_filepath, 'r') as file:
-                IQR = json.dump(file)
+                IQR = json.load(file)
         except FileNotFoundError as e:
             print(f"Error: {e}")
             raise FileNotFoundError("To cap this dataset you have to first set your outliers quantiles")
