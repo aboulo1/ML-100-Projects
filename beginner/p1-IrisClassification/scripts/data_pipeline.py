@@ -16,7 +16,10 @@ from Processing import preprocessing
 
 project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
 sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
-from utils import load_config
+from utils import load_config_decorator
+#%% Fetch config paths
+
+config_path = os.path.join(project_root, 'config.json')
 
 class DataPipeline:
     """
@@ -40,8 +43,8 @@ class DataPipeline:
         y_train (Series or ndarray): Training labels.
         y_test (Series or ndarray): Test labels.
     """
-    
-    def __init__(self, is_iris_loaded : bool = True):
+    @load_config_decorator(config_path)
+    def __init__(config, self, is_iris_loaded : bool = True):
         
         """
         Initializes the pipeline with the given parameters
@@ -51,8 +54,6 @@ class DataPipeline:
             If True, loads the iris dataset from sklearn. Otherwise, reads data from a CSV file.
         """
         #%% access config file
-        config_path = os.path.join(project_root, 'config.json')
-        config = load_config(config_path)
         self.data_path = os.path.join(project_root, config['data_path'])
         self.is_iris_loaded = is_iris_loaded
         self.target_name = config['target_column']

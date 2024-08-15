@@ -39,3 +39,25 @@ def load_config(config_path):
     except json.JSONDecodeError as e:
         logging.error(f"Error decoding JSON configuration: {config_path}")
         raise e
+        
+def load_config_decorator(config_file_path):
+    """
+    A decorator factory
+    Parameters
+    ----------
+    config_file_path : str
+        Decorator to load the configs.
+
+    Returns
+    -------
+    the decorator
+
+    """
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            # Load configurations
+            config = load_config(config_file_path)
+            # Pass the configurations to the function
+            return func(config, *args, **kwargs)
+        return wrapper
+    return decorator

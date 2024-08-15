@@ -10,24 +10,23 @@ import json
 import sys
 import pandas as pd
 import numpy as np 
-from typing import Union
 from sklearn.preprocessing import StandardScaler
 from joblib import load, dump
 #%% Set project directory
 project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
-#%% Import utils.py # it's save in the beginner folder
+#%% Import utils.py # it's save in the "beginner" folder
 # Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
-from utils import load_config
-#%% Fetch all need config paths
-config_path = os.path.join(project_root, 'config.json')
-config = load_config(config_path)
-# paths to save or load our model processors
-scaler_filepath = os.path.join(project_root, config['scaler_save_path'])
-IQR_filepath = os.path.join(project_root,config['IQR_save_path'])
 
+sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
+from utils import load_config_decorator
+#%% Fetch config paths
+
+config_path = os.path.join(project_root, 'config.json')
 #%% Create the processing function
-def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
+
+@load_config_decorator(config_path)
+def preprocessing(config, 
+                  iris : np.ndarray | pd.DataFrame,
                   feature_names : list = [],
                   train : bool = False,
                   save_scaler : bool = True,
@@ -95,6 +94,9 @@ def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
     
     X = iris[['PetalLength','PetalWidth','SepalWidth']]
     
+    #%% paths to save or load our model processors
+    scaler_filepath = os.path.join(project_root, config['scaler_save_path'])
+    IQR_filepath = os.path.join(project_root,config['IQR_save_path'])
     if train : # Standardize, cap outliers and save to files
     
         # We've also noticed that all these variables follow a normal distribution 
@@ -164,6 +166,7 @@ def capping(column : pd.Series, column_IQR : dict):
     lower_bound = Q1 - 1.5 * IQR
     upper_bound = Q3 + 1.5 * IQR
     return column.clip(lower=lower_bound, upper=upper_bound)
+
 
 
         

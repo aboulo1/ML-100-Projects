@@ -13,7 +13,10 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
 project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
 sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
-from utils import load_config
+from utils import load_config_decorator
+#%% Fetch config paths
+
+config_path = os.path.join(project_root, 'config.json')
 
 class ModelPipeline:
     """
@@ -27,8 +30,8 @@ class ModelPipeline:
        model (object): The machine learning model to be used in the pipeline. Defaults to a linear SVM.
        model_save_path (str): The path where the trained model will be saved or loaded from.
    """
-    
-    def __init__(self, model = None):
+    @load_config_decorator(config_path)
+    def __init__(config, self, model = None):
         """
         Initializes the ModelPipeline with the specified model or a default linear SVM.
 
@@ -40,8 +43,6 @@ class ModelPipeline:
             self.model = SVC(kernel='linear')
         else:
             self.model = model
-        config_path = os.path.join(project_root, 'config.json')
-        config = load_config(config_path)
         self.model_save_path = os.path.join(project_root,config['model_save_path'])
     
     def train (self, X_train, y_train):
