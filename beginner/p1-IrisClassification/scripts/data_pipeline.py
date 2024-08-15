@@ -19,10 +19,6 @@ project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
 sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
 from utils import load_config
 
-#%% access config file
-config_path = os.path.join(project_root, 'config.json')
-config = load_config(config_path)
-
 class DataPipeline:
     """
     A data pipeline class for loading, preprocessing, and splitting data for the iris classification model.
@@ -55,6 +51,9 @@ class DataPipeline:
         load_iris : bool
             If True, loads the iris dataset from sklearn. Otherwise, reads data from a CSV file.
         """
+        #%% access config file
+        config_path = os.path.join(project_root, 'config.json')
+        config = load_config(config_path)
         self.data_path = os.path.join(project_root, config['data_path'])
         self.is_iris_loaded = is_iris_loaded
         self.target_name = config['target_column']
