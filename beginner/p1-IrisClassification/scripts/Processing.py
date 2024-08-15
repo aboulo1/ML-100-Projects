@@ -23,7 +23,7 @@ from utils import load_config
 config_path = os.path.join(project_root, 'config.json')
 config = load_config(config_path)
 # paths to save or load our model processors
-scaler_filepath = os.path.join(project_root, config['model_save_path'])
+scaler_filepath = os.path.join(project_root, config['scaler_save_path'])
 IQR_filepath = os.path.join(project_root,config['IQR_save_path'])
 
 #%% Create the processing function
