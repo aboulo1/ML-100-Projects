@@ -40,7 +40,7 @@ def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
         data : Union [np.ndarray, pd.DataFrame], mandatory
             The input data to process
         train : a boolean that indicates if we're processing in the training phase or not
-            if train = True : then we will be saving Scalers, Outlier parameters etc
+            if train = True : then we will be training Scalers, Outlier parameters etc
             if train = False : then we'll be reading model preprocessing files
         feature names : The list of the features names
         
