@@ -8,7 +8,6 @@ Created on Thu Aug 15 15:50:37 2024
 
 #%% Import needed libraries
 import sys
-import logging
 import os
 import pandas as pd
 from sklearn.datasets import load_iris
@@ -80,10 +79,10 @@ class DataPipeline:
             self.feature_names = self.data.feature_names
         else:
             try:
-                logging.info(f"Loading data from {self.data_path}")
+                print(f"Loading data from {self.data_path}")
                 self.data = pd.read_csv(self.data_path)
             except FileNotFoundError as e:
-                logging.error(f"File not found: {self.data_path}")
+                print(f"File not found: {self.data_path}")
                 raise e
                 
                 
@@ -99,7 +98,7 @@ class DataPipeline:
             KeyError: If the target column is not found in the dataset.
         """
         try:
-            logging.info(f"Preprocessing data: target column is {self.target_name}")
+            print(f"Preprocessing data: target column is {self.target_name}")
             if self.is_iris_loaded: #the format is different from a dataframe read
                 X = self.data.data
                 y = self.data[self.target_name]
@@ -112,9 +111,9 @@ class DataPipeline:
             self.X_test = preprocessing(X_test, train=False, feature_names = self.feature_names)
             self.y_train = y_train
             self.y_test = y_test
-            logging.info("Preprocessing completed successfully")
+            print("Preprocessing completed successfully")
         except KeyError as e:
-            logging.error(f"Column not found in data: {self.target_column}")
+            print(f"Column not found in data: {self.target_column}")
             raise e
             
     def get_data(self):
