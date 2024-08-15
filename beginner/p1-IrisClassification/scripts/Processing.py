@@ -7,36 +7,26 @@ Created on Wed Aug 14 08:35:59 2024
 """
 import os
 import json
+import sys
 import pandas as pd
 import numpy as np 
-import logging
 from typing import Union
 from sklearn.preprocessing import StandardScaler
 from joblib import load, dump
-
+#%% Set project directory
 project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
+#%% Import utils.py # it's save in the beginner folder
+# Add the parent directory to sys.path
+sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
+from utils import load_config
+#%% Fetch all need config paths
 config_path = os.path.join(project_root, 'config.json')
-
-def load_config(config_path):
-    try:
-        logging.info(f"Loading configuration from {config_path}")
-        with open(config_path, 'r') as f:
-            config = json.load(f)
-        return config
-    except FileNotFoundError as e:
-        logging.error(f"Configuration file not found: {config_path}")
-        raise e
-    except json.JSONDecodeError as e:
-        logging.error(f"Error decoding JSON configuration: {config_path}")
-        raise e
-
 config = load_config(config_path)
-
 # paths to save or load our model processors
 scaler_filepath = os.path.join(project_root, config['model_save_path'])
 IQR_filepath = os.path.join(project_root,config['IQR_save_path'])
 
-# Create the processing function
+#%% Create the processing function
 def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
                   feature_names : list = [],
                   train : bool = False,
