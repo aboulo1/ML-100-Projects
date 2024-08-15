@@ -8,7 +8,6 @@ Created on Wed Aug 14 08:35:19 2024
 
 #%% Imports
 
-import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -19,7 +18,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.inspection import DecisionBoundaryDisplay
 #%% Load the dataset and split the data set
 
 iris = load_iris()
