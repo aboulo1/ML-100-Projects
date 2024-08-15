@@ -9,16 +9,32 @@ import os
 import json
 import pandas as pd
 import numpy as np 
+import logging
 from typing import Union
 from sklearn.preprocessing import StandardScaler
 from joblib import load, dump
 
 project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
-models_path = os.path.join(project_root, 'models')
+config_path = os.path.join(project_root, 'config.json')
+
+def load_config(config_path):
+    try:
+        logging.info(f"Loading configuration from {config_path}")
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        return config
+    except FileNotFoundError as e:
+        logging.error(f"Configuration file not found: {config_path}")
+        raise e
+    except json.JSONDecodeError as e:
+        logging.error(f"Error decoding JSON configuration: {config_path}")
+        raise e
+
+config = load_config(config_path)
 
 # paths to save or load our model processors
-scaler_filepath = os.path.join(models_path,'feature_standard_scaler.pkl')
-IQR_filepath = os.path.join(models_path,'feature_IQR.json')
+scaler_filepath = os.path.join(project_root, config['model_save_path'])
+IQR_filepath = os.path.join(project_root,config['IQR_save_path'])
 
 # Create the processing function
 def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
@@ -53,7 +69,8 @@ def preprocessing(iris : Union [np.ndarray, pd.DataFrame],
         ------
             from sklearn.datasets import load_iris
             iris = load_iris()
-            preprocessing(iris, train=True, save_scaler=False, save_IQR=False)
+            preprocessing(iris.data, feature_names = iris.feature_names, 
+                          train=True, save_scaler=False, save_IQR=False)
             
             OR
             
@@ -157,5 +174,7 @@ def capping(column : pd.Series, column_IQR : dict):
     lower_bound = Q1 - 1.5 * IQR
     upper_bound = Q3 + 1.5 * IQR
     return column.clip(lower=lower_bound, upper=upper_bound)
+
+
         
         
