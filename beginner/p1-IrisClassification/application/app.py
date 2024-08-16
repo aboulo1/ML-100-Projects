@@ -21,7 +21,7 @@ from model_pipeline import ModelPipeline
 from data_pipeline import DataPipeline
 #%% Initialize the FastAPI app
 
-app = FastAPI(title="Predict Flower Specy",
+fastapp = FastAPI(title="Predict Flower Specy",
               description= "Fetch the specy of a flower base on his physical size")
 #%% Load model
 # Global variables to hold the cached model and data pipeline
@@ -29,7 +29,7 @@ model = None
 data_pipeline = None
 
 # Load model and data pipeline at startup
-@app.on_event("startup")
+@fastapp.on_event("startup")
 def load_model_and_data_pipeline():
     global model, data_pipeline
     data_pipeline = DataPipeline()
@@ -56,7 +56,7 @@ class PredictProbaResult(BaseModel):
 prediction_list = list(PredictionResult)
     
 #%% Prediction endpoint
-@app.post("/predict", response_model=list[PredictionResult])
+@fastapp.post("/predict", response_model=list[PredictionResult])
 def predict(data: Annotated[list[InputData] , 
                             Body(embed=True, 
                                  description = "The specifications of the flower to classify")]):
@@ -68,7 +68,7 @@ def predict(data: Annotated[list[InputData] ,
 #%% Let's do a predict proba endpoint to play with dicts
 #Make sure that the loaded model was trained with probability = True
 
-@app.post("/predict_proba", response_model=list[PredictProbaResult])
+@fastapp.post("/predict_proba", response_model=list[PredictProbaResult])
 def predict_proba(data: Annotated[list[InputData], Body(description="The specifications of the flower to classify")]):
     input_data = np.array([[d.SepalLength, d.SepalWidth, d.PetalLength, d.PetalWidth] for d in data])
     processed_input = data_pipeline.preprocess_raw_data(input_data)

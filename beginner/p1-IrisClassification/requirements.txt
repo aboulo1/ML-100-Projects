@@ -1,4 +1,5 @@
-fastapi==0.112.1
+uvicorn
+fastapi[standard]
 joblib==1.2.0
 matplotlib==3.8.0
 numpy==1.23.5
