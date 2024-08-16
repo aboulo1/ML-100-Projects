@@ -34,6 +34,8 @@ def preprocessing(config,
         The input argument data is a mandatory 4 columns np ndarray or pd.DataFrame
         Parameters
         ----------
+        config : dict
+            contains all the configuration infos passed down through the decorator
         data : Union [np.ndarray, pd.DataFrame], mandatory
             The input data to process
         train : a boolean that indicates if we're processing in the training phase or not

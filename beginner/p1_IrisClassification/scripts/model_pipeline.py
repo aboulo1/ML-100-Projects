@@ -39,7 +39,10 @@ class ModelPipeline:
 
         Parameters:
         ------
-            model (object, optional): A machine learning model instance. If not provided, defaults to SVC with a linear kernel.
+            config : dict
+                contains all the configuration infos passed down through the decorator
+            model : object, optional
+                A machine learning model instance. If not provided, defaults to SVC with a linear kernel.
         """
         if model is None:
             self.model = SVC(kernel='linear', probability=True)

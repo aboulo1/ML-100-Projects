@@ -56,7 +56,9 @@ class DataPipeline:
         Initializes the pipeline with the given parameters
         Parameters
         ------
-        load_iris : bool
+        config : dict
+            contains all the configuration infos passed down through the decorator
+        is_iris_loaded : bool
             If True, loads the iris dataset from sklearn. Otherwise, reads data from a CSV file.
         """
         #%% access config file
@@ -138,5 +140,18 @@ class DataPipeline:
         return self.X_train, self.X_test, self.y_train, self.y_test
     
     def preprocess_raw_data(self, input_data : np.ndarray | pd.DataFrame):
+        """
+
+        Parameters
+        ----------
+        input_data : np.ndarray | pd.DataFrame
+            the data to preprocess in order to evaluate it with our model
+
+        Returns
+        -------
+        TYPE : np.ndarray | pd.DataFrame
+            the processed data ready to be fed to the model.
+
+        """
         self.load_data()
         return preprocessing(input_data, train=False, feature_names = self.feature_names)

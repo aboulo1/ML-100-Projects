@@ -10,6 +10,15 @@ from data_pipeline import DataPipeline
 from model_pipeline import ModelPipeline
 
 def main():
+    """
+    A quick function to train, evaluate and save the model in a few lines
+    All the preprocessing is handled in the pipelines
+
+    Returns
+    -------
+    None.
+
+    """
     # Data Pipeline
     pipeline = DataPipeline() #could add is_iris_loaded=False
     X_train, X_test, y_train, y_test = pipeline.get_data()
