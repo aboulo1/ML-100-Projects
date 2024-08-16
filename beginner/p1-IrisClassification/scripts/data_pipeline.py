@@ -10,6 +10,7 @@ Created on Thu Aug 15 15:50:37 2024
 import sys
 import os
 import pandas as pd
+import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from Processing import preprocessing
@@ -44,7 +45,7 @@ class DataPipeline:
         y_test (Series or ndarray): Test labels.
     """
     @load_config_decorator(config_path)
-    def __init__(config, self, is_iris_loaded : bool = True):
+    def __init__(config, self,  is_iris_loaded : bool = True):
         
         """
         Initializes the pipeline with the given parameters
@@ -130,3 +131,7 @@ class DataPipeline:
         self.load_data()
         self.preprocess()
         return self.X_train, self.X_test, self.y_train, self.y_test
+    
+    def preprocess_raw_data(self, input_data : np.ndarray | pd.DataFrame):
+        self.load_data()
+        return preprocessing(input_data, train=False, feature_names = self.feature_names)
