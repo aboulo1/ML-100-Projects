@@ -40,7 +40,7 @@ class ModelPipeline:
             model (object, optional): A machine learning model instance. If not provided, defaults to SVC with a linear kernel.
         """
         if model is None:
-            self.model = SVC(kernel='linear')
+            self.model = SVC(kernel='linear', probability=True)
         else:
             self.model = model
         self.model_save_path = os.path.join(project_root,config['model_save_path'])

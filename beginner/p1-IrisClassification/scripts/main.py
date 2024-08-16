@@ -11,7 +11,7 @@ from model_pipeline import ModelPipeline
 
 def main():
     # Data Pipeline
-    pipeline = DataPipeline() #is_iris_loaded=False
+    pipeline = DataPipeline() #could add is_iris_loaded=False
     X_train, X_test, y_train, y_test = pipeline.get_data()
     
     # Model Pipeline
