@@ -8,6 +8,7 @@ Created on Thu Aug 15 15:53:58 2024
 
 import logging
 import json
+import os
 
 def load_config(config_path):
     """
@@ -56,8 +57,22 @@ def load_config_decorator(config_file_path):
     def decorator(func):
         def wrapper(*args, **kwargs):
             # Load configurations
-            config = load_config(config_file_path)
+            config = load_config(remove_leading_slash(config_file_path))
             # Pass the configurations to the function
             return func(config, *args, **kwargs)
         return wrapper
     return decorator
+
+def remove_leading_slash(path):
+    """
+    Removes the leading slash from a file path if it starts with one.
+
+    Parameters:
+    path (str): The file path.
+
+    Returns:
+    str: The file path without a leading slash.
+    """
+    if os.path.exists('/.dockerenv') and path.startswith('/'): #running in docker
+        return path[1:]
+    return path

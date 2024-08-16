@@ -15,10 +15,9 @@ from enum import Enum
 
 current_dir = os.getcwd()
 project_root = os.path.abspath(os.path.join(current_dir, '..'))
-
-sys.path.append(os.path.abspath(os.path.join(project_root, 'scripts')))
-from model_pipeline import ModelPipeline
-from data_pipeline import DataPipeline
+sys.path.append(project_root)
+from scripts.model_pipeline import ModelPipeline
+from scripts.data_pipeline import DataPipeline
 #%% Initialize the FastAPI app
 
 fastapp = FastAPI(title="Predict Flower Specy",

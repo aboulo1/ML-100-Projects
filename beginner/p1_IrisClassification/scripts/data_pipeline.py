@@ -13,13 +13,16 @@ import pandas as pd
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
-from Processing import preprocessing
 
+# current_dir = os.getcwd()
+# project_root = os.path.abspath(os.path.join(current_dir, '..'))
+# sys.path.append(project_root)
+# sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
 current_dir = os.getcwd()
 project_root = os.path.abspath(os.path.join(current_dir, '..'))
-
-sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
-from utils import load_config_decorator
+sys.path.append(os.path.abspath(project_root))
+from utils import load_config_decorator, remove_leading_slash
+from scripts.Processing import preprocessing
 #%% Fetch config paths
 
 config_path = os.path.join(project_root, 'config.json')
@@ -84,7 +87,7 @@ class DataPipeline:
         else:
             try:
                 print(f"Loading data from {self.data_path}")
-                self.data = pd.read_csv(self.data_path)
+                self.data = pd.read_csv(remove_leading_slash(self.data_path))
             except FileNotFoundError as e:
                 print(f"File not found: {self.data_path}")
                 raise e
