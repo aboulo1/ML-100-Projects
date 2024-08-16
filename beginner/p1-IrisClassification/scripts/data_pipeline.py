@@ -15,7 +15,9 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from Processing import preprocessing
 
-project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
+current_dir = os.getcwd()
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
 sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
 from utils import load_config_decorator
 #%% Fetch config paths

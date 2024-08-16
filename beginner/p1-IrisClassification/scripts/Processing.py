@@ -13,9 +13,8 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from joblib import load, dump
 #%% Set project directory
-project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
-#%% Import utils.py # it's save in the "beginner" folder
-# Add the parent directory to sys.path
+current_dir = os.getcwd()
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
 
 sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
 from utils import load_config_decorator

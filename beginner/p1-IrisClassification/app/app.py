@@ -13,13 +13,16 @@ from fastapi import FastAPI, Body
 from pydantic import BaseModel, Field
 from enum import Enum
 
-project_root = '/Users/aboubakr/ML-100-Projects/beginner/p1-IrisClassification'
+current_dir = os.getcwd()
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
 sys.path.append(os.path.abspath(os.path.join(project_root, 'scripts')))
 from model_pipeline import ModelPipeline
 from data_pipeline import DataPipeline
 #%% Initialize the FastAPI app
 
-app = FastAPI()
+app = FastAPI(title="Predict Flower Specy",
+              description= "Fetch the specy of a flower base on his physical size")
 #%% Load model
 # Global variables to hold the cached model and data pipeline
 model = None
