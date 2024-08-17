@@ -1,0 +1,8 @@
+{
+  "data_path": "data/iris.csv",
+  "target_column": "target",
+  "scaler_save_path": "models/feature_standard_scaler.pkl",
+  "IQR_save_path": "models/feature_IQR.json",  
+  "model_save_path": "models/irisclassifier.pkl",
+  "log_file": "logs/iris.log"
+}
