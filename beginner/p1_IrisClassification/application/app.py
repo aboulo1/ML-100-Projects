@@ -7,10 +7,10 @@ Created on Fri Aug 16 08:15:43 2024
 """
 import sys
 import os
-import numpy as np
+import numpy as np # type: ignore
 from typing import Annotated
-from fastapi import FastAPI, Body
-from pydantic import BaseModel, Field
+from fastapi import FastAPI, Body # type: ignore
+from pydantic import BaseModel, Field # type: ignore
 from enum import Enum
 
 current_dir = os.getcwd()

@@ -21,11 +21,11 @@ from sklearn.model_selection import train_test_split
 current_dir = os.getcwd()
 project_root = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(os.path.abspath(project_root))
-from utils import load_config_decorator, remove_leading_slash
+from utils import load_config_decorator
 from scripts.Processing import preprocessing
 #%% Fetch config paths
 
-config_path = os.path.join(project_root, 'config.json')
+config_path = os.path.join(current_dir, 'config.json')
 
 class DataPipeline:
     """
@@ -62,7 +62,7 @@ class DataPipeline:
             If True, loads the iris dataset from sklearn. Otherwise, reads data from a CSV file.
         """
         #%% access config file
-        self.data_path = os.path.join(project_root, config['data_path'])
+        self.data_path = os.path.join(current_dir, config['data_path'])
         self.is_iris_loaded = is_iris_loaded
         self.target_name = config['target_column']
         self.data = None
@@ -89,7 +89,7 @@ class DataPipeline:
         else:
             try:
                 print(f"Loading data from {self.data_path}")
-                self.data = pd.read_csv(remove_leading_slash(self.data_path))
+                self.data = pd.read_csv(self.data_path)
             except FileNotFoundError as e:
                 print(f"File not found: {self.data_path}")
                 raise e
