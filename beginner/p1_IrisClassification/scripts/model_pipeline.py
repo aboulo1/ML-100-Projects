@@ -15,10 +15,10 @@ from sklearn.metrics import accuracy_score, classification_report
 current_dir = os.getcwd()
 project_root = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(os.path.abspath(project_root))
-from utils import load_config_decorator, remove_leading_slash
+from utils import load_config_decorator
 #%% Fetch config paths
 
-config_path = os.path.join(project_root, 'config.json')
+config_path = os.path.join(current_dir, 'config.json')
 
 class ModelPipeline:
     """
@@ -48,7 +48,7 @@ class ModelPipeline:
             self.model = SVC(kernel='linear', probability=True)
         else:
             self.model = model
-        self.model_save_path = os.path.join(project_root,config['model_save_path'])
+        self.model_save_path = os.path.join(current_dir,config['model_save_path'])
     
     def train (self, X_train, y_train):
         """
@@ -111,7 +111,7 @@ class ModelPipeline:
         """
         try:
             print(f"Saving model to {self.model_save_path}")
-            dump(self.model, remove_leading_slash(self.model_save_path))
+            dump(self.model, self.model_save_path)
             print("Model saved successfully")
         except Exception as e:
             print(f"Saving model to {self.model_save_path} failed")
@@ -128,7 +128,7 @@ class ModelPipeline:
         """
         try:
             print(f"Loading model from {self.model_save_path}")
-            self.model = load(remove_leading_slash(self.model_save_path))
+            self.model = load(self.model_save_path)
             print("Model loaded successfully")
         except FileNotFoundError as e:
             print(f"Model file not found in: {self.model_save_path}")

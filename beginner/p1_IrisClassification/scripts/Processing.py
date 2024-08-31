@@ -16,10 +16,10 @@ from joblib import load, dump
 current_dir = os.getcwd()
 project_root = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(os.path.abspath(os.path.join(project_root, '..')))
-from utils import load_config_decorator, remove_leading_slash
+from utils import load_config_decorator
 #%% Fetch config paths
 
-config_path = os.path.join(project_root, 'config.json')
+config_path = os.path.join(current_dir, 'config.json')
 #%% Create the processing function
 
 @load_config_decorator(config_path)
@@ -105,7 +105,7 @@ def preprocessing(config,
         scaled_X = scaler.fit_transform(X)
         scaled_X = pd.DataFrame(scaled_X, columns=X.columns)
         # Save scaler in the models directory for further usage
-        if save_scaler : dump(scaler, remove_leading_slash(scaler_filepath))
+        if save_scaler : dump(scaler, scaler_filepath)
         
         # Now let's handle outliers via a capping 
         # For that we must get the first and third quantile to set an upper and lower bound
@@ -115,13 +115,13 @@ def preprocessing(config,
         
         # Save the IQR dictionnary to a json file
         if save_IQR :
-            with open(remove_leading_slash(IQR_filepath), 'w') as file:
+            with open(IQR_filepath, 'w') as file:
                 json.dump(IQR, file, indent=4)
     
     else : #Read the trained parameters and apply them to data
         # Load the scaler and transform the data
         try:
-            scaler = load(remove_leading_slash(scaler_filepath))
+            scaler = load(scaler_filepath)
         except FileNotFoundError as e:
             print(f"Error: {e}")
             raise FileNotFoundError("To transform this dataset you have to first train your standardScaler")
@@ -130,7 +130,7 @@ def preprocessing(config,
         
         # Load the quantiles and cap outliers
         try:
-            with open(remove_leading_slash(IQR_filepath), 'r') as file:
+            with open(IQR_filepath, 'r') as file:
                 IQR = json.load(file)
         except FileNotFoundError as e:
             print(f"Error: {e}")
