@@ -1,0 +1,7 @@
+{
+  "train_path": "data/train.csv",
+  "test_path":"data/test.csv",
+  "title_map" : "models/title_map.json",
+  "means" : "models/numeric_means.json",
+  "scaler_save_path":"models/standardScaler.pkl"
+}

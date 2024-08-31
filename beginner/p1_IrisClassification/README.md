@@ -2,6 +2,7 @@
 
 This project is part of a series of 100 machine learning projects aimed at building and deploying machine learning models. 
 The goal of this project is to classify different species of iris flowers based on the measurements of their petals and sepals.
+You can test the swagger at : https://iris-classification-service-697664343307.europe-west4.run.app/docs
 # True Goal
 The goal is not the model, it's all the rest : 
 clear project structure, consistent naming, documentation of functions and project,
