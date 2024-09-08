@@ -29,8 +29,8 @@ sys.path.append(os.path.abspath(current_dir))
 from utils import load_config_decorator, load_json
 
 #% Fetch config paths
-#ref_dir = current_dir
-ref_dir = os.path.abspath(os.path.join(current_dir, '..'))
+ref_dir = current_dir
+#ref_dir = os.path.abspath(os.path.join(current_dir, '..')) #Use this for model prototyping #TODO do it better
 config_path = os.path.join(ref_dir, 'config.json')
 print(ref_dir)
 
@@ -39,6 +39,7 @@ print(ref_dir)
 @load_config_decorator(config_path)
 def preprocessing(config,
                titanic : pd.DataFrame,
+               target_data : bool = True,
                train : bool = False,
                save_scaler : bool = True,
                save_encoder : bool = True):
@@ -69,7 +70,8 @@ def preprocessing(config,
     X,y
 
     """
-    y = titanic.Survived
+    if target_data : y = titanic.Survived
+    else : y = None
     # After the EDA we've decided to keep the following columns :
     #features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch','Fare', 'Embarked']
     # Get Title from name

@@ -9,10 +9,16 @@ Created on Sun Aug 18 13:45:39 2024
 import logging
 import json
 import os
+import pandas as pd
 
 def load_json(filepath):
     with open(filepath, 'r') as fp:
         data = json.load(fp)
+    return data
+
+def dump_json(data, filepath):
+    with open(filepath, 'w') as fp:
+        json.dump(data,fp)
     return data
 
 def load_config(config_path):
@@ -68,6 +74,17 @@ def load_config_decorator(config_file_path):
         return wrapper
     return decorator
 
+def load_csv_data(file_path: str):
+    """
+    Helper function to load a CSV file and handle errors.
+    """
+    try:
+        print(f"Loading data from {file_path}")
+        return pd.read_csv(file_path)
+    except FileNotFoundError as e:
+        print(f"File not found: {file_path}")
+        raise e
+
 from sklearn.metrics import confusion_matrix
 
 def weighted_f1_score(y_true, y_pred):
@@ -94,10 +111,3 @@ def weighted_f1_score(y_true, y_pred):
     weighted_f1 = (f1_pos * support_pos + f1_neg * support_neg) / total_support
     
     return weighted_f1
-
-# Example usage:
-y_true = [0, 1, 0, 1, 0, 1, 0, 0, 1, 1]
-y_pred = [0, 1, 0, 0, 0, 1, 0, 1, 1, 0]
-
-weighted_f1 = weighted_f1_score(y_true, y_pred)
-print("Weighted F1-Score:", weighted_f1)
