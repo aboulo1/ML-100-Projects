@@ -21,69 +21,74 @@ import os
 import sys
 import pandas as pd
 import numpy as np 
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures, LabelEncoder
 from joblib import load, dump
-#%% Set project directory
+#% Set project directory
 current_dir = os.getcwd()
-project_root = os.path.abspath(os.path.join(current_dir, '..'))
-sys.path.append(os.path.abspath(project_root))
+sys.path.append(os.path.abspath(current_dir))
 from utils import load_config_decorator, load_json
 
-#%% Fetch config paths
-config_path = os.path.join(project_root, 'config.json')
+#% Fetch config paths
+#ref_dir = current_dir
+ref_dir = os.path.abspath(os.path.join(current_dir, '..'))
+config_path = os.path.join(ref_dir, 'config.json')
+print(ref_dir)
 
-#%% Preprocessing function
+
+#% Preprocessing function
 @load_config_decorator(config_path)
 def preprocessing(config,
                titanic : pd.DataFrame,
                train : bool = False,
-               save_scaler : bool = True):
+               save_scaler : bool = True,
+               save_encoder : bool = True):
     """
 
     Parameters
     ----------
     config : TYPE
         DESCRIPTION.
-    titanic : np.ndarray | pd.DataFrame
+    titanic : pd.DataFrame
         DESCRIPTION.
-    feature_names : list, optional
-        DESCRIPTION. The default is [].
     train : bool, optional
         DESCRIPTION. The default is False.
     save_scaler : bool, optional
+        DESCRIPTION. The default is True.
+    save_encoder : bool, optional
         DESCRIPTION. The default is True.
 
     Raises
     ------
     ValueError
         DESCRIPTION.
+    FileNotFoundError
+        DESCRIPTION
 
     Returns
     -------
-    None.
+    X,y
 
     """
     y = titanic.Survived
     # After the EDA we've decided to keep the following columns :
-    features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch','Fare', 'Embarked']
+    #features = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch','Fare', 'Embarked']
     # Get Title from name
     titanic['Title'] = titanic.Name.str.extract('([A-Za-z]+)\.')
-    title_map_fp = os.path.join(project_root, config['title_map'])
+    title_map_fp = os.path.join(ref_dir, config['title_map'])
     title_mapper = load_json(title_map_fp)
     titanic.Title = titanic.Title.replace(title_mapper)
-    try:
-        data = titanic[features]
-    except KeyError as e:
-        print(f"Error: {e}")
-        raise KeyError("The set provided is missing mandatory columns")
+
+    #Drop unnecessary columns
+    drop_cols = ['Name','Cabin','Ticket', 'PassengerId','Survived']
+    data = titanic.drop(drop_cols, axis=1, errors='ignore')
+
     # Fill na
     dtypes = data.dtypes
     numerical_col = dtypes[dtypes != 'object'].index
-    means_fp = os.path.join(project_root, config['means'])
+    means_fp = os.path.join(ref_dir, config['means'])
     means = load_json(means_fp)
     for col in numerical_col:
         data[col] = data[col].fillna(means[col])
-    
     # Polynomial Features
     for_poly_feat = ['Age','Fare']
     poly = PolynomialFeatures(degree=2, include_bias=False)
@@ -106,27 +111,41 @@ def preprocessing(config,
     data.Parch = data.Parch.apply(lambda x : 'alone' if x == 0 else ( 'duo' if x == 1 else 'other'))
     dtypes = data.dtypes
     numerical_col = dtypes[dtypes != 'object'].index.tolist()
-    #Scaling numerical columns
-    scaler_filepath = os.path.join(project_root, config['scaler_save_path'])
+    #Handle Sex:
+    data.Sex = data.Sex == 'male'
+
+    scaler_filepath = os.path.join(ref_dir, config['scaler_save_path'])
+    encoder_filepath = os.path.join(ref_dir, config['encoder_save_path'])
+    dummy_cols = ['SibSp','Parch','Embarked', 'Title'] #Enums in APP
     if train:
+        #Scaling numerical columns
         scaler = StandardScaler()
         data[numerical_col] = scaler.fit_transform(data[numerical_col])
         if save_scaler : dump(scaler, scaler_filepath)
-    
+        #LabelEncoding
+        le = LabelEncoder()
+        data[dummy_cols] = data[dummy_cols].apply(le.fit_transform)
+        if save_encoder : dump(le, encoder_filepath)
+
     else:
+        #Scaling numerical data
         try:
             scaler = load(scaler_filepath)
         except FileNotFoundError as e:
             print(f"Error: {e}")
-            raise FileNotFoundError("To transform this dataset you have to first train your standardScaler")
+            raise FileNotFoundError("To transform this dataset you have to first train your Standard Scaler")
         data[numerical_col] = scaler.transform(data[numerical_col])
         
-    #Handle Sex:
-    data.Sex = data.Sex == 'male'
-    #Object columns
-    dummy_cols = ['SibSp','Parch','Embarked'] #Enums in APP
-    X = pd.get_dummies(data, columns=dummy_cols)   
-    return X,y
+        #LabelEncoder
+        try:
+            le = load(encoder_filepath)
+        except FileNotFoundError as e:
+            print(f"Error: {e}")
+            raise FileNotFoundError("To transform this dataset you have to first train your Label Encoder")
+        data[dummy_cols] = data[dummy_cols].apply(le.fit_transform)
+
+    X = pd.get_dummies(data, 'Title')
+    return data,y
 
 
 
@@ -153,3 +172,5 @@ def preprocessing(config,
 
 
 
+
+# %%
