@@ -62,22 +62,42 @@ def load_config_decorator(config_file_path):
     def decorator(func):
         def wrapper(*args, **kwargs):
             # Load configurations
-            config = load_config(remove_leading_slash(config_file_path))
+            config = load_config(config_file_path)
             # Pass the configurations to the function
             return func(config, *args, **kwargs)
         return wrapper
     return decorator
 
-def remove_leading_slash(path):
-    """
-    Removes the leading slash from a file path if it starts with one.
+from sklearn.metrics import confusion_matrix
 
-    Parameters:
-    path (str): The file path.
+def weighted_f1_score(y_true, y_pred):
+    # Calculate confusion matrix
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    
+    # Precision and Recall
+    precision_pos = tp / (tp + fp) if (tp + fp) != 0 else 0
+    recall_pos = tp / (tp + fn) if (tp + fn) != 0 else 0
+    
+    precision_neg = tn / (tn + fn) if (tn + fn) != 0 else 0
+    recall_neg = tn / (tn + fp) if (tn + fp) != 0 else 0
+    
+    # F1-Scores for both classes
+    f1_pos = 2 * (precision_pos * recall_pos) / (precision_pos + recall_pos) if (precision_pos + recall_pos) != 0 else 0
+    f1_neg = 2 * (precision_neg * recall_neg) / (precision_neg + recall_neg) if (precision_neg + recall_neg) != 0 else 0
+    
+    # Support (number of instances for each class)
+    support_pos = tp + fn
+    support_neg = tn + fp
+    
+    # Weighted F1-Score
+    total_support = support_pos + support_neg
+    weighted_f1 = (f1_pos * support_pos + f1_neg * support_neg) / total_support
+    
+    return weighted_f1
 
-    Returns:
-    str: The file path without a leading slash.
-    """
-    if os.path.exists('/.dockerenv') and path.startswith('/'): #running in docker
-        return path[1:]
-    return path
+# Example usage:
+y_true = [0, 1, 0, 1, 0, 1, 0, 0, 1, 1]
+y_pred = [0, 1, 0, 0, 0, 1, 0, 1, 1, 0]
+
+weighted_f1 = weighted_f1_score(y_true, y_pred)
+print("Weighted F1-Score:", weighted_f1)
