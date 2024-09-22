@@ -10,8 +10,28 @@ import logging
 import json
 import os
 import pandas as pd
+from sklearn.metrics import confusion_matrix
+
 
 def load_json(filepath):
+    """
+    Parameters
+    ----------
+    config_path : string
+        Path to the configuration file.
+
+    Raises
+    ------
+    e
+        FileNotFoundError if if the wrong_path is inputed
+        Logging Error if the json file cannot be decoded / parsed
+
+    Returns
+    -------
+    config : dict
+        all the config attributes with their corresponding value.
+
+    """
     with open(filepath, 'r') as fp:
         data = json.load(fp)
     return data
@@ -85,7 +105,7 @@ def load_csv_data(file_path: str):
         print(f"File not found: {file_path}")
         raise e
 
-from sklearn.metrics import confusion_matrix
+
 
 def weighted_f1_score(y_true, y_pred):
     # Calculate confusion matrix

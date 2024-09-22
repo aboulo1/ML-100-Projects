@@ -50,13 +50,10 @@ class EmbarkationPort (str, Enum):
     cherbourg = 'C'
     queenstown = 'Q'
     southampton = 'S'
-#%% Define the input data model
+# Define the input data model
 class InputData(BaseModel):
     """
-    Body of the prediction endpoints
-
-    Args:
-        BaseModel (_type_): _description_
+    Body of the prediction endpoints. It embeds the data that'll be pushed in the prediction model
     """
     Pclass : Pclass
     Name : str = Field(..., description="The passenger's Name", example="Braund, Mr. Owen Harris", regex = "([A-Za-z]+),\s(Mr|Mrs|Miss|Master)\.\s([A-Za-z\s]+)")
@@ -71,7 +68,7 @@ class InputData(BaseModel):
 
 class PredictionResult (float, Enum):
     """The prediction Result of the model.
-    Using enums since only two outputs are possible
+    In this binary classification case we have two outputs 0 : Died, 1 : Survived
     """
     Died = 0
     Survived = 1
@@ -88,6 +85,22 @@ class PredictProbaResult(BaseModel):
 def predict(Passenger : Annotated[InputData,
              Body(embed=True,
                   description = "The passengers information")]):
+    """
+    Predict if the passenger survived or not
+
+    Parameters
+    ----------
+    Passenger : Annotated[InputData,             
+                          Body(embed, optional
+        DESCRIPTION. The default is True,                  
+        description = "The passengers information")].
+
+    Returns
+    -------
+    prediction : PredictionResult
+        Wether the passenger survuved or not . 0 means death.
+
+    """
     input_data = [Passenger.Pclass.value, Passenger.Name, Passenger.Sex.value, Passenger.Age, Passenger.SibSp, Passenger.Parch, Passenger.Ticket, Passenger.Fare, Passenger.Cabin, Passenger.Embarked.value]
     input_data = pd.DataFrame([input_data], columns=cols)
     processed_input = data_pipeline.preprocess_api(input_data)
@@ -99,6 +112,22 @@ def predict(Passenger : Annotated[InputData,
 def predict_proba(Passenger : Annotated[InputData,
              Body(embed=True,
                   description = "The passengers information")]):
+    """
+    The death and survival probability of the described passenger.    
+
+    Parameters
+    ----------
+    Passenger : Annotated[InputData,             
+                          Body(embed, optional
+        DESCRIPTION. The default is True,                  
+        description = "The passengers information")].
+
+    Returns
+    -------
+    PredictProbaResult
+        
+
+    """
     input_data = [Passenger.Pclass.value, Passenger.Name, Passenger.Sex.value, Passenger.Age, Passenger.SibSp, Passenger.Parch, Passenger.Ticket, Passenger.Fare, Passenger.Cabin, Passenger.Embarked.value]
     input_data = pd.DataFrame([input_data], columns=cols)
     processed_input = data_pipeline.preprocess_api(input_data)
@@ -114,6 +143,22 @@ prediction_list = list(PredictionResult)
 def predict_mult(Passengers : Annotated[list[InputData],
              Body(embed=True,
                   description = "The passengers information")]):
+    """
+    
+
+    Parameters
+    ----------
+    Passengers : Annotated[list[InputData],             
+                           Body(embed, optional
+        DESCRIPTION. The default is True,                  
+        description = "The passengers information")].
+
+    Returns
+    -------
+    predicted_class : list[PredictionResult] the outcome for each passenger
+        DESCRIPTION.
+
+    """
     input_data = [[Passenger.Pclass.value, Passenger.Name, Passenger.Sex.value, Passenger.Age, Passenger.SibSp, Passenger.Parch, Passenger.Ticket, Passenger.Fare, Passenger.Cabin, Passenger.Embarked.value] for Passenger in Passengers]
     input_data = pd.DataFrame(input_data, columns=cols)
     processed_input = data_pipeline.preprocess_api(input_data)

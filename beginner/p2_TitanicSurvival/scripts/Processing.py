@@ -47,24 +47,26 @@ def preprocessing(config,
 
     Parameters
     ----------
-    config : TYPE
-        DESCRIPTION.
+    config : dict
+            contains all the configuration infos passed down through the decorator
     titanic : pd.DataFrame
-        DESCRIPTION.
-    train : bool, optional
-        DESCRIPTION. The default is False.
+        The passenger (s) information.
+    train : a boolean that indicates if we're processing in the training phase or not
+            if train = True : then we will be training Scalers, Outlier parameters etc
+            if train = False : then we'll be reading model preprocessing files
+            The default is False.
     save_scaler : bool, optional
-        DESCRIPTION. The default is True.
+        a boolean to indicate if we want to save a new scaler during training. 
+        The default is True.
     save_encoder : bool, optional
-        DESCRIPTION. The default is True.
+        a boolean to indicate if we want to save a new encoder during training. 
+        The default is True.
 
     Raises
     ------
-    ValueError
-        DESCRIPTION.
     FileNotFoundError
-        DESCRIPTION
-
+        If you are in test mode but didn't train and save your scaler or
+            oencoder parameters
     Returns
     -------
     X,y
