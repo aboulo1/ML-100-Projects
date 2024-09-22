@@ -137,6 +137,3 @@ The project is organized into the following structure:
 - **`README.md`**: The main project documentation, providing an overview and instructions.
 - **`requirements.txt`**: Lists all the dependencies required to run the project.
 - ** 'Dockerfile' ** : The dockerfile to create the image of our application to deploy on GCP
-
-
-
