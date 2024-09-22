@@ -135,4 +135,19 @@ class DataPipeline:
         """
         return preprocessing(input_data, train=False, target_data=False)
     
+    def preprocess_api(self, input_data : pd.DataFrame):
+        """
+
+        Parameters
+        ----------
+        input_data : pd.DataFrame
+            the data to preprocess in order to evaluate it with our model
+
+        Returns
+        -------
+        TYPE :  pd.DataFrame
+            the processed data ready to be fed to the model.
+
+        """
+        return preprocessing(input_data, train=False, target_data=False)[0]
         
