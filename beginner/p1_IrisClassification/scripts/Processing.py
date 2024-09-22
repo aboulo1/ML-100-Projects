@@ -95,8 +95,8 @@ def preprocessing(config,
     X = iris[['PetalLength','PetalWidth','SepalWidth']]
     
     #%% paths to save or load our model processors
-    scaler_filepath = os.path.join(project_root, config['scaler_save_path'])
-    IQR_filepath = os.path.join(project_root,config['IQR_save_path'])
+    scaler_filepath = os.path.join(current_dir, config['scaler_save_path'])
+    IQR_filepath = os.path.join(current_dir,config['IQR_save_path'])
     if train : # Standardize, cap outliers and save to files
     
         # We've also noticed that all these variables follow a normal distribution 

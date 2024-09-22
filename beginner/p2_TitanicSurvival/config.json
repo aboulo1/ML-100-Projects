@@ -1,0 +1,11 @@
+{
+  "train_path": "data/train.csv",
+  "test_path":"data/test.csv",
+  "title_map" : "models/title_map.json",
+  "means" : "models/numeric_means.json",
+  "scaler_save_path":"models/standardScaler.pkl",
+  "encoder_save_path":"models/labelEncoder.pkl",
+  "xgb_save_path" : "models/xgb.pkl",
+  "xgb_params" : "models/xgb_params.json",
+  "model_save_path" : "models/classifier.pkl"
+}
